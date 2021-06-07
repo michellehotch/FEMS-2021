@@ -25,7 +25,7 @@ Load required .csv file. This file is organized in a way such that all effect si
 
 
 ```{r}
-effectsize_final <- read.csv("Final Spreadsheet/effectsizesforfig_final.csv", stringsAsFactors = TRUE, na.strings=c(""))
+effectsize_final <- read.csv("tables/effectsizes.csv", stringsAsFactors = TRUE, na.strings=c(""))
 
 effectsize_final$All.Logs<-as.numeric(as.character(effectsize_final$All.Logs))
 
@@ -295,7 +295,7 @@ effectsizesfig_fourpanel <-
 effectsizesfig_fourpanel
 ```
 
-Annotate the figure so that it has a common y-axis. 
+Annotate the figure so that it has a common y-axis. **Note: The common legend of this figure does not show glyphosate and Roundup. They must be edited in after**
 
 ```{r}
 annotate_figure(effectsizesfig_fourpanel,

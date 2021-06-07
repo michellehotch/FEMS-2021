@@ -24,14 +24,14 @@ str(speciespesticide)
 
 ```
 
-## Figure 2 - Pesticide Frequency Across All Modern Studies
+## Figure 3 - Pesticide Frequency Across All Modern Studies
 
 ```{r}
 speciespesticide %>% 
   mutate(pesticide = recode(pesticide, "Boscalid/Pyraclostrobin Mixture" = "Pristine")) %>% 
   dplyr::filter(year > 1990) %>% 
   group_by(pesticide, pesticide_type) %>% 
-  summarize(n=n()) 
+  summarize(n=n()) %>% 
   ggplot(aes(x=fct_reorder(pesticide, n, .desc = TRUE), y=n, fill=pesticide_type)) +
   geom_bar(width=0.75, stat = "identity") +
   theme_pubr() +
@@ -46,37 +46,5 @@ speciespesticide %>%
                      limits = c(0,6))+
   scale_fill_manual(values=c("#FFD930", "#3DCC00", "#00BBFF"))+
    labs(fill = "Pesticide Type")
-```
-
-##Figure __ - Percentage of Tested Pesticides That Disturb Each Taxa
-
-First off, how many pesticides do we have?
-
-```{r}
-effectsize_final %>% 
-  count(Pesticide)
-
-#19 pesticides
-```
-
-
-```{r}
- effectsize_final %>% 
-    dplyr::filter(!(Order == "")) %>% #get rid of blanks
-    dplyr::filter(Sig == "Yes") %>% 
-    dplyr::filter(Core == "Y") %>% 
-    group_by(Order) %>% 
-    count(Pesticide) %>% 
-    summarize(n=n()) %>% 
-    mutate(freq = n/18) %>% 
-    ggplot(aes(x=fct_reorder(Order, desc(freq)), y=freq)) +
-    geom_bar(width=0.5, stat = "identity") +
-    theme_classic() +
-    theme(legend.position = "none", text = element_text(size = 16, colour = "black"), axis.text.y = element_text(color = "black"), axis.text.x = element_text(hjust = 1, vjust=1, angle=45, size = 12, colour = "black"))+
-    scale_x_discrete(name = "Order")+
-    scale_y_continuous(name = "Proportion of Pesticides \n That  Induce a \n Significant Disturbance",
-                       breaks = seq(0, 0.5, len = 3), 
-                       expand = c(0, 0),
-                       limits = c(0,0.5))
 ```
 

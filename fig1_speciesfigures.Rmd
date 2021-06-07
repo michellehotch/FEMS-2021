@@ -81,7 +81,7 @@ df_speciesandstudies_long %>%
 Load required .csv file. 
 
 ```{r}
-allbeetaxa <- read.csv("Pesticide Bee Review/Stats/bees.csv", stringsAsFactors = TRUE, na.strings=c(""))
+  allbeetaxa <- read.csv("tables/bees.csv", stringsAsFactors = TRUE, na.strings=c(""))
 
 str(allbeetaxa)
 ```
@@ -99,32 +99,3 @@ allbeetaxa %>%
   guides(colour = guide_legend(override.aes = list(size=16)))+
   theme(axis.text.x=element_blank())
 ```
-
-## Figure 1C: Bar Chart of Pesticides Studied in Each Bee Species (Recent Studies)
-
-```{r}
-speciespesticide %>% 
-  dplyr::filter(year > 2014) %>% 
-  group_by(species) %>% 
-  count(pesticide) %>% 
-  summarize(n=n()) %>% 
-  ggplot(aes(x=fct_reorder(species, desc(n)), y=n, fill=species)) +
-  geom_bar(width=0.75, stat = "identity") +
-  theme_classic() +
-  theme(text = element_text(size = 16, color = "black"), 
-        axis.text.x = element_text( size = 14, color = "black"),
-        axis.text.y = element_text(size = 16, color = "black"),
-        legend.position = "none",
-        axis.title.y = element_text(size = 20, color = "black", margin = margin(t = 0, r = 20, b = 0, l = 0)),
-        axis.title.x = element_text(size = 20, color = "black", margin = margin(t = 20, r = 0, b = 0, l = 0)))+
-  scale_x_discrete(name="Species")+
-  scale_y_continuous(name ="Number of Pesticides Examined", 
-                     breaks = seq(0, 20, len = 6), 
-                     expand = c(0, 0),
-                     limits = c(0,18))+
-  scale_fill_manual(values=c("#FC6471", "#FFD930", "#00BBFF", "#2372D9", "#3DCC00"))+
-  labs(fill = "Species")
-```
-
-
-

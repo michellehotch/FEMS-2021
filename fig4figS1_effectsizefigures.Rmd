@@ -22,7 +22,7 @@ library(ggpubr)
 Load required .csv file. This file is organized in a way such that all effect sizes are listed in the file once with a label in the significance column "All", and all significant effect sizes are listed a second time with the label in the significance column "Yes". This is done so that later we can facet the figure by 1) all results regardless of significance and 2) only significant results.
 
 ```{r}
-effectsize_final <- read.csv("Final Spreadsheet/effectsizesforfig_final2.csv", stringsAsFactors = TRUE, na.strings=c(""))
+effectsize_final <- read.csv("tables/effectsizes.csv", stringsAsFactors = TRUE, na.strings=c(""))
 
 effectsize_final$All.Logs<-as.numeric(as.character(effectsize_final$All.Logs))
 
@@ -98,7 +98,7 @@ fig_effectsizeorders_ng <- effectsize_final_ng %>%
   facet_wrap(~ Order, scales = 'free', ncol = 2, strip.position = "top")
 ```
 
-Now, based on further analysis, there are some differences in how the phylotypes within Lactobacillales react to pesticide exposure, so we're going to make another figure that shows the differences between the Firm-4 and Firm-5 phylotypes.
+Make another figure that shows the differences between the Firm-4 and Firm-5 phylotypes.
 
 ```{r}
 effectsize_lacto_sig_ng <- 
@@ -281,7 +281,7 @@ effectsizesfig_fourpanel <-
 effectsizesfig_fourpanel
 ```
 
-Annotate the figure so that there is one common y-axis.
+Annotate the figure so that there is one common y-axis. **Note: The common legend of this figure does not show glyphosate and Roundup. They must be edited in after**
 
 ```{r}
 annotate_figure(effectsizesfig_fourpanel,
