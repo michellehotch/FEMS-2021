@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+## Set Up 
+
+Load required libraries.
+
+```{r}
+library(tidyverse)
+library(ggpubr)
+```
+
+Load required .csv file.
+
+```{r}
+speciespesticide <- read.csv("tables/speciesandpesticides.csv", stringsAsFactors = TRUE, na.strings=c(""))
+
+str(speciespesticide)
+
+
+```
+
+## Figure 2 - Pesticide Frequency Across All Modern Studies
+
+```{r}
+speciespesticide %>% 
+  mutate(pesticide = recode(pesticide, "Boscalid/Pyraclostrobin Mixture" = "Pristine")) %>% 
+  dplyr::filter(year > 1990) %>% 
+  group_by(pesticide, pesticide_type) %>% 
+  summarize(n=n()) 
+  ggplot(aes(x=fct_reorder(pesticide, n, .desc = TRUE), y=n, fill=pesticide_type)) +
+  geom_bar(width=0.75, stat = "identity") +
+  theme_pubr() +
+  theme(text = element_text(size = 16), axis.text.x = element_text(size = 16, angle = 45, hjust = 1, vjust = 1),
+        legend.position = "right",
+        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 20, b = 0, l = 0)),
+        axis.title.x = element_text(size = 20, margin = margin(t = 20, r = 0, b = 0, l = 0)))+
+  scale_x_discrete(name="Pesticide")+
+  scale_y_continuous(name ="Number of Studies", 
+                     breaks = seq(0, 5, len = 6), 
+                     expand = c(0, 0),
+                     limits = c(0,6))+
+  scale_fill_manual(values=c("#FFD930", "#3DCC00", "#00BBFF"))+
+   labs(fill = "Pesticide Type")
+```
+
+##Figure __ - Percentage of Tested Pesticides That Disturb Each Taxa
+
+First off, how many pesticides do we have?
+
+```{r}
+effectsize_final %>% 
+  count(Pesticide)
+
+#19 pesticides
+```
+
+
+```{r}
+ effectsize_final %>% 
+    dplyr::filter(!(Order == "")) %>% #get rid of blanks
+    dplyr::filter(Sig == "Yes") %>% 
+    dplyr::filter(Core == "Y") %>% 
+    group_by(Order) %>% 
+    count(Pesticide) %>% 
+    summarize(n=n()) %>% 
+    mutate(freq = n/18) %>% 
+    ggplot(aes(x=fct_reorder(Order, desc(freq)), y=freq)) +
+    geom_bar(width=0.5, stat = "identity") +
+    theme_classic() +
+    theme(legend.position = "none", text = element_text(size = 16, colour = "black"), axis.text.y = element_text(color = "black"), axis.text.x = element_text(hjust = 1, vjust=1, angle=45, size = 12, colour = "black"))+
+    scale_x_discrete(name = "Order")+
+    scale_y_continuous(name = "Proportion of Pesticides \n That  Induce a \n Significant Disturbance",
+                       breaks = seq(0, 0.5, len = 3), 
+                       expand = c(0, 0),
+                       limits = c(0,0.5))
+```
+

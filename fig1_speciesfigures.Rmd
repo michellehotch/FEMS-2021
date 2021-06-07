@@ -1,0 +1,130 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+## Set Up 
+
+Load required libraries.
+
+```{r}
+library(tidyverse)
+library(ggpubr)
+```
+
+Load required .csv file.
+
+```{r}
+speciespesticide <- read.csv("tables/speciesandpesticides.csv", stringsAsFactors = TRUE, na.strings=c(""))
+
+str(speciespesticide)
+```
+
+## Figure 1A: Bar Plot of Number of Studies and Pesticides by Species
+
+```{r}
+#Make dataframe for number of studies
+studiesn<-speciespesticide %>%
+  dplyr::filter(time_period == "recent") %>% 
+  group_by(species) %>% 
+  count(authors) %>% 
+    summarize(studiesn=n())
+
+#Make dataframe for number of pesticides
+speciesn<-speciespesticide %>% 
+  dplyr::filter(year > 2014) %>% 
+  group_by(species) %>% 
+  count(pesticide) %>% 
+  summarize(pesticiden=n())
+
+#Merge dataframes
+df_speciesandstudies <- left_join(studiesn, speciesn, by = c("species" = "species"))
+
+#Get into long format
+df_speciesandstudies_long <- df_speciesandstudies %>% 
+  pivot_longer(!species, names_to = "type", values_to = "number")
+
+#Reorder species
+df_speciesandstudies_long$species <- factor(df_speciesandstudies_long$species, levels = c("Apis mellifera", "Apis cerana", "Bombus impatiens", "Bombus terrestris", "Partamona helleri"))
+
+
+#Create function to split species names for x-axis labels
+addline_format <- function(x,...){
+    gsub('\\s','\n',x)
+}
+
+#Make the plot
+df_speciesandstudies_long %>% 
+  ggplot(aes(x=fct_reorder(species, number, .desc = TRUE), y=number, fill=species, alpha=type)) +
+    geom_bar(width=0.9, stat = "identity", position = "dodge") +
+    theme_pubr() +
+    theme(text = element_text(size = 16), 
+          axis.text.x = element_text(face = "italic", size = 16),
+          legend.position = "right",
+          axis.title.y = element_blank(),
+          axis.title.x = element_text(size = 20, margin = margin(t = 20, r = 0, b = 0, l = 0)))+
+    scale_y_continuous(name ="Number", 
+                       breaks = seq(0, 20, len = 5), 
+                       expand = c(0, 0),
+                       limits = c(0,18))+
+    scale_fill_manual(guide = 'none', values=c("#FFD930","#FC6471", "#00BBFF", "#2372D9", "#3DCC00")) +
+  scale_alpha_discrete(range = c(1, 0.5), name = "", labels = c("Number of Pesticides \nExamined", "Number of Studies \nConducted"))+
+    labs(fill = "Species", alpha = "")+
+  scale_x_discrete(name="Species", breaks=unique(df_speciesandstudies_long$species), labels=addline_format(c("Apis cerana", 
+                        "Apis mellifera", "Bombus impatiens", "Bombus terrestris", "Partamona helleri")))
+```
+
+## Figure 1B: Pie Chart of All Social Corbiculate Bee Taxa
+
+Load required .csv file. 
+
+```{r}
+allbeetaxa <- read.csv("Pesticide Bee Review/Stats/bees.csv", stringsAsFactors = TRUE, na.strings=c(""))
+
+str(allbeetaxa)
+```
+
+Make figure.
+
+```{r}
+allbeetaxa %>%  
+  ggplot(aes(x="", y=n, fill=gen)) +
+  geom_bar(width=1, stat = "identity") +
+  coord_polar("y", start=0) +
+  theme_void() +
+  scale_fill_manual(name = "Taxa", values=c("#FFD930", "#00BBFF", "#3DCC00")) +
+  theme(text = element_text(size = 22)) +
+  guides(colour = guide_legend(override.aes = list(size=16)))+
+  theme(axis.text.x=element_blank())
+```
+
+## Figure 1C: Bar Chart of Pesticides Studied in Each Bee Species (Recent Studies)
+
+```{r}
+speciespesticide %>% 
+  dplyr::filter(year > 2014) %>% 
+  group_by(species) %>% 
+  count(pesticide) %>% 
+  summarize(n=n()) %>% 
+  ggplot(aes(x=fct_reorder(species, desc(n)), y=n, fill=species)) +
+  geom_bar(width=0.75, stat = "identity") +
+  theme_classic() +
+  theme(text = element_text(size = 16, color = "black"), 
+        axis.text.x = element_text( size = 14, color = "black"),
+        axis.text.y = element_text(size = 16, color = "black"),
+        legend.position = "none",
+        axis.title.y = element_text(size = 20, color = "black", margin = margin(t = 0, r = 20, b = 0, l = 0)),
+        axis.title.x = element_text(size = 20, color = "black", margin = margin(t = 20, r = 0, b = 0, l = 0)))+
+  scale_x_discrete(name="Species")+
+  scale_y_continuous(name ="Number of Pesticides Examined", 
+                     breaks = seq(0, 20, len = 6), 
+                     expand = c(0, 0),
+                     limits = c(0,18))+
+  scale_fill_manual(values=c("#FC6471", "#FFD930", "#00BBFF", "#2372D9", "#3DCC00"))+
+  labs(fill = "Species")
+```
+
+
+

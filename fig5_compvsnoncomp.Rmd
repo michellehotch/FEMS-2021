@@ -1,0 +1,306 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+## Set Up 
+
+Load required libraries.
+
+```{r}
+library(tidyverse)
+library(ggpubr)
+```
+
+Load required .csv file. This file is organized in a way such that all effect sizes are listed in the file once with a label in the significance column "All", and all significant effect sizes are listed a second time with the label in the significance column "Yes". This is done so that later we can facet the figure by 1) all results regardless of significance and 2) only significant results. 
+
+
+```{r}
+effectsize_final <- read.csv("Final Spreadsheet/effectsizesforfig_final.csv", stringsAsFactors = TRUE, na.strings=c(""))
+
+effectsize_final$All.Logs<-as.numeric(as.character(effectsize_final$All.Logs))
+
+str(effectsize_final)
+
+```
+
+
+## Compositional effect sizes only
+
+Filter the initial dataset by noncomp results only. 
+
+```{r}
+
+effectsize_final_comp <- effectsize_final %>% 
+  dplyr::filter(Type == "Comp")
+  
+```
+
+Generate a separate dataset that is significant results only for the dot plot.
+
+```{r}
+effectsize_c_orders_sig <-
+  effectsize_final_comp %>% 
+  dplyr::filter(Sig == "Yes") %>% 
+  dplyr::filter(Order == "Lactobacillales" | Order == "Orbales" | Order == "Bifidobacteriales" | Order == "Neisseriales") %>%
+  dplyr::filter(Core == "Y") %>% 
+  dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
+  dplyr::filter(!is.na(All.Logs))
+
+fig_c_effectsizeorder <- effectsize_final_comp %>% 
+  dplyr::filter(!is.na(All.Logs)) %>%  #get rid of NAs
+  dplyr::filter(Order == "Lactobacillales" | Order == "Orbales" | Order == "Bifidobacteriales" | Order == "Neisseriales") %>% 
+  dplyr::filter(Core == "Y") %>% 
+  dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
+  ggplot(aes(x=Sig, y = All.Logs)) +
+  geom_rect(xmin = 0, xmax = 1.5, ymin = -Inf, ymax = Inf, fill = "#DCDCDC")+
+  geom_boxplot(position=position_dodge(width = 2)) +
+  geom_dotplot(data = effectsize_c_orders_sig, stackgroups = TRUE, method = "histodot",
+               binaxis = 'y', stackdir = 'center', dotsize = 1, 
+               position = position_dodge(width = 0), 
+               aes(fill= Pesticide),  alpha=0.7)+
+  scale_fill_manual(name = "Pesticide",values=c("Chlorothalonil" = "#8F2D56",    
+                                                "Coumaphos" = "#EE2F75",
+                                                "Fipronil" = "#ED6D5A",
+                                                "Glyphosate" = "#FFBC42",
+                                                "Imidacloprid" = "#00BD9D",
+                                                "Nitenpyram" = "#047815",
+                                                "Pristine" = "#063000",
+                                                "Roundup" = "#00A9FE",
+                                                "Spinosad" = "#0050D9",
+                                                "Thiamethoxam" = "#7C18AF"))+
+  geom_hline(aes(yintercept = 0), colour = "#696969", linetype = "longdash")+
+  geom_hline(aes(yintercept = 1), colour = "#696969", linetype = "dashed")+
+  geom_hline(aes(yintercept = -1), colour = "#696969", linetype = "dashed")+
+  theme_classic() +
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    legend.title = element_blank(),
+    strip.placement = "outside", 
+    strip.text.x = element_text( #text in facet labels
+      size = 12, color = "black", face = "bold"),
+    strip.background = element_rect(#background of facet labels
+      color="white", fill="#ffffff", size=1.5),
+    panel.spacing.y = unit(2, "lines"),
+    legend.position = "bottom",
+    axis.title.y = element_blank())+
+  theme(text = element_text(size = 14), axis.text.y = element_text(color="black", size = 10))+
+  scale_y_continuous(name ="Log2 Fold Change \n(Treatment/Control)")+
+  scale_x_discrete(labels=c("All" = "All Results", "Yes" = "Significant \nResults"), expand = c(0.5, 0))+
+  facet_wrap(~ Order, scales = 'free', ncol = 2, strip.position = "top")
+
+```
+
+Then make another panel for the two Lactobacillales phylotypes.
+
+```{r}
+effectsize_c_lacto_sig <- 
+  effectsize_final_comp %>% 
+  dplyr::filter(Sig == "Yes") %>% 
+  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Core == "Y") %>% 
+  dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
+  dplyr::filter(!is.na(All.Logs))
+
+fig_c_effectsizelacto <- effectsize_final_comp %>% 
+  dplyr::filter(!is.na(All.Logs)) %>% #get rid of NAs
+  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Core == "Y") %>% 
+  dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
+  ggplot(aes(x=Sig, y = All.Logs)) +
+  geom_rect(xmin = 0, xmax = 1.5, ymin = -Inf, ymax = Inf, fill = "#DCDCDC")+
+  geom_boxplot(position=position_dodge(width = 2)) + 
+  geom_dotplot(data = effectsize_c_lacto_sig, stackgroups = TRUE, method = "histodot",
+               binaxis = 'y', stackdir = 'center', dotsize = 1.2, 
+               position = position_dodge(width = 0), 
+               aes(fill= Pesticide),  alpha=0.7)+
+  scale_fill_manual(name = "Pesticide",values=c("Chlorothalonil" = "#8F2D56",    
+                                                "Coumaphos" = "#EE2F75",
+                                                "Fipronil" = "#ED6D5A",
+                                                "Glyphosate" = "#FFBC42",
+                                                "Imidacloprid" = "#00BD9D",
+                                                "Nitenpyram" = "#047815",
+                                                "Pristine" = "#063000",
+                                                "Roundup" = "#00A9FE",
+                                                "Spinosad" = "#0050D9",
+                                                "Thiamethoxam" = "#7C18AF"))+
+  geom_hline(aes(yintercept = 0), colour = "#696969", linetype = "longdash")+
+  geom_hline(aes(yintercept = 1), colour = "#696969", linetype = "dashed")+
+  geom_hline(aes(yintercept = -1), colour = "#696969", linetype = "dashed")+
+  theme_classic() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        legend.title = element_blank(),
+        strip.placement = "outside", 
+        strip.text.x = element_text( #text in facet labels
+          size = 12, color = "black", face = "bold"),
+        strip.background = element_rect(#background of facet labels
+          color="white", fill="#ffffff", size=1.5),
+        panel.spacing.y = unit(2, "lines"),
+        legend.position = "none",
+        axis.title.y = element_blank())+
+  theme(text = element_text(size = 14), axis.text.x = element_text(vjust=0.3, size = 12, color="black"), axis.text.y = element_text(color="black", size = 10))+
+  scale_y_continuous(name ="Log2 Fold Change \n(Treatment/Control)")+
+  scale_x_discrete(labels=c("All" = "All Results", "Yes" = "Significant \nResults"), expand = c(0.5, 0))+
+  facet_wrap(~ Species, scales = 'free', ncol = 2, strip.position = "top")
+```
+
+## Non-compositional effect sizes only
+
+Filter the initial dataset by noncomp results only. 
+
+```{r}
+
+effectsize_final_noncomp <- effectsize_final %>% 
+  dplyr::filter(Type == "Noncomp")
+
+```
+
+Now use the same code as before, just with the noncomp dataset. 
+
+```{r}
+effectsize_nc_orders_sig <-
+  effectsize_final_noncomp %>% 
+  dplyr::filter(Sig == "Yes") %>% 
+  dplyr::filter(Order == "Lactobacillales" | Order == "Orbales" | Order == "Bifidobacteriales" | Order == "Neisseriales") %>%
+   dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
+  dplyr::filter(Core == "Y") %>% 
+  dplyr::filter(!is.na(All.Logs))
+
+fig_nc_effectsizeorder <- effectsize_final_noncomp %>% 
+  dplyr::filter(!is.na(All.Logs)) %>%  #get rid of NAs
+  dplyr::filter(Order == "Lactobacillales" | Order == "Orbales" | Order == "Bifidobacteriales" | Order == "Neisseriales") %>% 
+   dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
+  dplyr::filter(Core == "Y") %>% 
+  ggplot(aes(x=Sig, y = All.Logs)) +
+  geom_rect(xmin = 0, xmax = 1.5, ymin = -Inf, ymax = Inf, fill = "#DCDCDC")+
+  geom_boxplot(position=position_dodge(width = 2)) +
+  geom_dotplot(data = effectsize_nc_orders_sig, stackgroups = TRUE, method = "histodot",
+               binaxis = 'y', stackdir = 'center', dotsize = 1, 
+               position = position_dodge(width = 0), 
+               aes(fill= Pesticide),  alpha=0.7)+
+  scale_fill_manual(name = "Pesticide",values=c("Chlorothalonil" = "#8F2D56",    
+                                                "Coumaphos" = "#EE2F75",
+                                                "Fipronil" = "#ED6D5A",
+                                                "Glyphosate" = "#FFBC42",
+                                                "Imidacloprid" = "#00BD9D",
+                                                "Nitenpyram" = "#047815",
+                                                "Pristine" = "#063000",
+                                                "Roundup" = "#00A9FE",
+                                                "Spinosad" = "#0050D9",
+                                                "Thiamethoxam" = "#7C18AF"))+
+  geom_hline(aes(yintercept = 0), colour = "#696969", linetype = "longdash")+
+  geom_hline(aes(yintercept = 1), colour = "#696969", linetype = "dashed")+
+  geom_hline(aes(yintercept = -1), colour = "#696969", linetype = "dashed")+
+  theme_classic() +
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    legend.title = element_blank(),
+    strip.placement = "outside", 
+    strip.text.x = element_text( #text in facet labels
+      size = 12, color = "black", face = "bold"),
+    strip.background = element_rect(#background of facet labels
+      color="white", fill="#ffffff", size=1.5),
+    panel.spacing.y = unit(2, "lines"),
+    legend.position = "bottom",
+    axis.title.y = element_blank())+
+  theme(text = element_text(size = 14),  axis.text.y = element_text(color="black", size = 10))+
+  scale_y_continuous(name ="Log2 Fold Change \n(Treatment/Control)")+
+  scale_x_discrete(labels=c("All" = "All Results", "Yes" = "Significant \nResults"), expand = c(0.5, 0))+
+  facet_wrap(~ Order, scales = 'free', ncol = 2, strip.position = "top")
+
+```
+
+Then the Lactobacillus phylotypes specific panel.
+
+```{r}
+effectsize_nc_lacto_sig <- 
+  effectsize_final_noncomp %>% 
+  dplyr::filter(Sig == "Yes") %>% 
+  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Core == "Y") %>% 
+   dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
+  dplyr::filter(!is.na(All.Logs))
+
+fig_nc_effectsizelacto <- effectsize_final_noncomp %>% 
+  dplyr::filter(!is.na(All.Logs)) %>% #get rid of NAs
+  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Core == "Y") %>% 
+   dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
+  ggplot(aes(x=Sig, y = All.Logs)) +
+  geom_rect(xmin = 0, xmax = 1.5, ymin = -Inf, ymax = Inf, fill = "#DCDCDC")+
+  geom_boxplot(position=position_dodge(width = 2)) + 
+  geom_dotplot(data = effectsize_nc_lacto_sig, stackgroups = TRUE, method = "histodot",
+               binaxis = 'y', stackdir = 'center', dotsize = 1.2, 
+               position = position_dodge(width = 0), 
+               aes(fill= Pesticide),  alpha=0.7)+
+  scale_fill_manual(name = "Pesticide",values=c("Chlorothalonil" = "#8F2D56",    
+                                                "Coumaphos" = "#EE2F75",
+                                                "Fipronil" = "#ED6D5A",
+                                                "Glyphosate" = "#FFBC42",
+                                                "Imidacloprid" = "#00BD9D",
+                                                "Nitenpyram" = "#047815",
+                                                "Pristine" = "#063000",
+                                                "Roundup" = "#00A9FE",
+                                                "Spinosad" = "#0050D9",
+                                                "Thiamethoxam" = "#7C18AF"))+
+  geom_hline(aes(yintercept = 0), colour = "#696969", linetype = "longdash")+
+  geom_hline(aes(yintercept = 1), colour = "#696969", linetype = "dashed")+
+  geom_hline(aes(yintercept = -1), colour = "#696969", linetype = "dashed")+
+  theme_classic() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        legend.title = element_blank(),
+        strip.placement = "outside", 
+        strip.text.x = element_text( #text in facet labels
+          size = 12, color = "black", face = "bold"),
+        strip.background = element_rect(#background of facet labels
+          color="white", fill="#ffffff", size=1.5),
+        panel.spacing.y = unit(2, "lines"),
+        legend.position = "none",
+        axis.title.y = element_blank())+
+  theme(text = element_text(size = 14), axis.text.x = element_text(vjust=0.3, size = 12, color="black"), axis.text.y = element_text(color="black", size = 10))+
+  scale_y_continuous(name ="Log2 Fold Change \n(Treatment/Control)")+
+  scale_x_discrete(labels=c("All" = "All Results", "Yes" = "Significant \nResults"), expand = c(0.5, 0))+
+  facet_wrap(~ Species, scales = 'free', ncol = 2, strip.position = "top")
+```
+
+
+Now make a four panel figures from all the plots. 
+
+```{r}
+effectsizesfig_fourpanel <-
+  ggarrange(fig_c_effectsizeorder, 
+            fig_nc_effectsizeorder,
+            fig_c_effectsizelacto,
+            fig_nc_effectsizelacto,
+            heights = c(2, 1), nrow=2, ncol = 2, common.legend = TRUE, legend = "bottom"
+           )
+
+effectsizesfig_fourpanel
+```
+
+Annotate the figure so that it has a common y-axis. 
+
+```{r}
+annotate_figure(effectsizesfig_fourpanel,
+                left = ggpubr::text_grob(expression(""*Log[2]~Fold~Change ~(Treatment/Control)*""), 
+                  size = 16, color = "black", rot = 90))
+
+```
+
