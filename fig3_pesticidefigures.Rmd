@@ -17,7 +17,7 @@ library(ggpubr)
 Load required .csv file.
 
 ```{r}
-speciespesticide <- read.csv("tables/speciesandpesticides.csv", stringsAsFactors = TRUE, na.strings=c(""))
+speciespesticide <- read.csv("data/speciesandpesticides.csv", stringsAsFactors = TRUE, na.strings=c(""))
 
 str(speciespesticide)
 

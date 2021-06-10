@@ -17,7 +17,7 @@ library(ggpubr)
 Load required .csv file.
 
 ```{r}
-speciespesticide <- read.csv("tables/speciesandpesticides.csv", stringsAsFactors = TRUE, na.strings=c(""))
+speciespesticide <- read.csv("data/speciesandpesticides.csv", stringsAsFactors = TRUE, na.strings=c(""))
 
 str(speciespesticide)
 ```
@@ -81,7 +81,7 @@ df_speciesandstudies_long %>%
 Load required .csv file. 
 
 ```{r}
-  allbeetaxa <- read.csv("tables/bees.csv", stringsAsFactors = TRUE, na.strings=c(""))
+  allbeetaxa <- read.csv("data/bees.csv", stringsAsFactors = TRUE, na.strings=c(""))
 
 str(allbeetaxa)
 ```
