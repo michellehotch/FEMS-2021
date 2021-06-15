@@ -86,13 +86,13 @@ fig_effectsizeorders_ng <- effectsize_final_ng %>%
     legend.title = element_blank(),
     strip.placement = "outside", 
     strip.text.x = element_text( #text in facet labels
-      size = 12, color = "black", face = "bold"),
+      size = 16, color = "black", face = "bold"),
     strip.background = element_rect(#background of facet labels
       color="white", fill="#ffffff", size=1.5),
     panel.spacing.y = unit(1, "lines"),
     legend.position = "right",
     axis.title.y = element_blank())+
-  theme(text = element_text(size = 14), axis.text.y = element_text(color="black", size = 10))+
+  theme(text = element_text(size = 16), axis.text.y = element_text(color="black", size = 16))+
   scale_y_continuous(name ="Log2-Fold Change \n(Treatment/Control)")+
   scale_x_discrete(expand = c(0.5, 0))+
   facet_wrap(~ Order, scales = 'free', ncol = 2, strip.position = "top")
@@ -136,13 +136,13 @@ fig_effectsizelactos_ng <-
         legend.title = element_blank(),
         strip.placement = "outside", 
         strip.text.x = element_text( #text in facet labels
-          size = 12, color = "black", face = "bold"),
+          size = 16, color = "black", face = "bold"),
         strip.background = element_rect(#background of facet labels
           color="white", fill="#ffffff", size=1.5),
         panel.spacing.y = unit(1, "lines"),
         legend.position = "right",
         axis.title.y = element_blank())+
-  theme(text = element_text(size = 14), axis.text.x = element_text(vjust=0.3, size = 12, color="black"), axis.text.y = element_text(color="black", size = 10))+
+  theme(text = element_text(size = 16), axis.text.x = element_text(vjust=0.3, size = 16, color="black"), axis.text.y = element_text(color="black", size = 16))+
   scale_y_continuous(name ="Log2-Fold Change \n(Treatment/Control)")+
   scale_x_discrete(labels=c("All" = "All Results", "Yes" = "Significant \nResults"), expand = c(0.5, 0))+
   facet_wrap(~ Species, scales = 'free', ncol = 2, strip.position = "top")
@@ -202,13 +202,13 @@ fig_effectsizeorders_g <-
     legend.title = element_blank(),
     strip.placement = "outside", 
     strip.text.x = element_text( #text in facet labels
-      size = 12, color = "black", face = "bold"),
+      size = 16, color = "black", face = "bold"),
     strip.background = element_rect(#background of facet labels
       color="white", fill="#ffffff", size=1.5),
     panel.spacing.y = unit(1, "lines"),
     legend.position = "right",
     axis.title.y = element_blank())+
-  theme(text = element_text(size = 14), axis.text.y = element_text(color="black", size = 10))+
+  theme(text = element_text(size = 16), axis.text.y = element_text(color="black", size = 16))+
   scale_y_continuous(name ="Log2-Fold Change \n(Treatment/Control)")+
   scale_x_discrete(expand = c(0.5, 0))+
   facet_wrap(~ Order, scales = 'free', ncol = 2, strip.position = "top")
@@ -252,13 +252,13 @@ fig_effectsizelactos_g <-
         legend.title = element_blank(),
         strip.placement = "outside", 
         strip.text.x = element_text( #text in facet labels
-          size = 12, color = "black", face = "bold"),
+          size = 16, color = "black", face = "bold"),
         strip.background = element_rect(#background of facet labels
           color="white", fill="#ffffff", size=1.5),
         panel.spacing.y = unit(2, "lines"),
         legend.position = "right",
         axis.title.y = element_blank())+
-  theme(text = element_text(size = 14), axis.text.x = element_text(vjust=0.3, size = 12, color="black"), axis.text.y = element_text(color="black", size = 10))+
+  theme(text = element_text(size = 16), axis.text.x = element_text(vjust=0.3, size = 16, color="black"), axis.text.y = element_text(color="black", size = 16))+
   scale_y_continuous(name ="Log2-Fold Change \n(Treatment/Control)")+
   scale_x_discrete(labels=c("All" = "All Results", "Yes" = "Significant \nResults"), expand = c(0.5, 0))+
   facet_wrap(~ Species, scales = 'free', ncol = 2, strip.position = "top")
@@ -316,7 +316,7 @@ effectsize_final %>%
     axis.ticks.x=element_blank(),
     strip.placement = "outside", 
     strip.text.x = element_text( #text in facet labels
-      size = 12, color = "black", face = "bold"),
+      size = 16, color = "black", face = "bold"),
     strip.background = element_rect(#background of facet labels
       color="white", fill="#ffffff", size=1.5),
     panel.spacing.y = unit(2, "lines"),
@@ -324,8 +324,8 @@ effectsize_final %>%
     axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0))
     )+
   theme(
-    text = element_text(size = 14), 
-    axis.text.x = element_text(vjust=0.3, size = 12, color="black"),
+    text = element_text(size = 16), 
+    axis.text.x = element_text(vjust=0.3, size = 16, color="black"),
     axis.text.y = element_text(color="black", size = 10))+
   scale_y_continuous(name ="Log2 Fold Change \n(Treatment/Control)")+
   scale_x_discrete(labels=c("All" = "All Results", "Yes" = "Significant \nResults"), 
