@@ -27,18 +27,25 @@ str(speciespesticide)
 ## Figure 3 - Pesticide Frequency Across All Modern Studies
 
 ```{r}
-speciespesticide %>% 
-  mutate(pesticide = recode(pesticide, "Boscalid/Pyraclostrobin Mixture" = "Pristine")) %>% 
+speciespesticide_rename <- speciespesticide %>% 
+  mutate(pesticide = recode(pesticide, "Pristine (Boscalid/pyraclostrobin mixture)" = "Pristine®")) %>% 
+  mutate(pesticide = recode(pesticide, "Roundup" = "Roundup®")) 
+
+#reorder factors so they're in the correct order when horizontal 
+speciespesticide_rename$pesticide <- factor(speciespesticide_rename$pesticide, levels = rev(levels(speciespesticide_rename$pesticide)))
+
+speciespesticide_rename %>% 
   dplyr::filter(year > 1990) %>% 
   group_by(pesticide, pesticide_type) %>% 
   summarize(n=n()) %>% 
-  ggplot(aes(x=fct_reorder(pesticide, n, .desc = TRUE), y=n, fill=pesticide_type)) +
+  ggplot(aes(x=fct_reorder(pesticide, n), y=n, fill=pesticide_type)) +
   geom_bar(width=0.75, stat = "identity") +
+  coord_flip()+
   theme_pubr() +
-  theme(text = element_text(size = 16), axis.text.x = element_text(size = 16, angle = 45, hjust = 1, vjust = 1),
+  theme(text = element_text(size = 14), axis.text.x = element_text(size = 14),
         legend.position = "right",
-        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 20, b = 0, l = 0)),
-        axis.title.x = element_text(size = 20, margin = margin(t = 20, r = 0, b = 0, l = 0)))+
+        axis.title.y = element_text(size = 18, margin = margin(t = 0, r = 20, b = 0, l = 0)),
+        axis.title.x = element_text(size = 18, margin = margin(t = 20, r = 0, b = 0, l = 0)))+
   scale_x_discrete(name="Pesticide")+
   scale_y_continuous(name ="Number of Studies", 
                      breaks = seq(0, 5, len = 6), 
