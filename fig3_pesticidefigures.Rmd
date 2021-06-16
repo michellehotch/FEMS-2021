@@ -42,10 +42,10 @@ speciespesticide_rename %>%
   geom_bar(width=0.75, stat = "identity") +
   coord_flip()+
   theme_pubr() +
-  theme(text = element_text(size = 14), axis.text.x = element_text(size = 14),
+  theme(text = element_text(size = 16), axis.text.x = element_text(size = 16),
         legend.position = "right",
-        axis.title.y = element_text(size = 18, margin = margin(t = 0, r = 20, b = 0, l = 0)),
-        axis.title.x = element_text(size = 18, margin = margin(t = 20, r = 0, b = 0, l = 0)))+
+        axis.title.y = element_text(size = 16, margin = margin(t = 0, r = 20, b = 0, l = 0)),
+        axis.title.x = element_text(size = 16, margin = margin(t = 20, r = 0, b = 0, l = 0)))+
   scale_x_discrete(name="Pesticide")+
   scale_y_continuous(name ="Number of Studies", 
                      breaks = seq(0, 5, len = 6), 
