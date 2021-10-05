@@ -108,14 +108,14 @@ Then make another panel for the two Lactobacillales phylotypes.
 effectsize_c_lacto_sig <- 
   effectsize_final_comp %>% 
   dplyr::filter(Sig == "Yes") %>% 
-  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Species == "Bombilactobacillus spp." | Species == "Lactobacillus near melliventris") %>%
   dplyr::filter(Core == "Y") %>% 
   dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
   dplyr::filter(!is.na(All.Logs))
 
 fig_c_effectsizelacto <- effectsize_final_comp %>% 
   dplyr::filter(!is.na(All.Logs)) %>% #get rid of NAs
-  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Species == "Bombilactobacillus spp." | Species == "Lactobacillus near melliventris") %>%
   dplyr::filter(Core == "Y") %>% 
   dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
   ggplot(aes(x=Sig, y = All.Logs)) +
@@ -231,14 +231,14 @@ Then the Lactobacillus phylotypes specific panel.
 effectsize_nc_lacto_sig <- 
   effectsize_final_noncomp %>% 
   dplyr::filter(Sig == "Yes") %>% 
-  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Species == "Bombilactobacillus spp." | Species == "Lactobacillus near melliventris") %>%
   dplyr::filter(Core == "Y") %>% 
    dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
   dplyr::filter(!is.na(All.Logs))
 
 fig_nc_effectsizelacto <- effectsize_final_noncomp %>% 
   dplyr::filter(!is.na(All.Logs)) %>% #get rid of NAs
-  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Species == "Bombilactobacillus spp." | Species == "Lactobacillus near melliventris") %>%
   dplyr::filter(Core == "Y") %>% 
    dplyr::filter(All.Logs>-50 & All.Logs<50) %>% ##get rid of extreme outliers
   ggplot(aes(x=Sig, y = All.Logs)) +
@@ -295,7 +295,7 @@ effectsizesfig_fourpanel <-
 effectsizesfig_fourpanel
 ```
 
-Annotate the figure so that it has a common y-axis. **Note: The common legend of this figure does not show glyphosate and Roundup. They must be edited in after**
+Annotate the figure so that it has a common y-axis title. **Note: The common legend of this figure does not show glyphosate and Roundup. They must be edited in after**
 
 ```{r}
 annotate_figure(effectsizesfig_fourpanel,

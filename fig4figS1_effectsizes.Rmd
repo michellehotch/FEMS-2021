@@ -104,11 +104,11 @@ Make another figure that shows the differences between the Firm-4 and Firm-5 phy
 effectsize_lacto_sig_ng <- 
   effectsize_final_ng %>% 
   dplyr::filter(Sig == "Yes") %>% 
-  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") 
+  dplyr::filter(Species == "Bombilactobacillus spp." | Species == "Lactobacillus near melliventris") 
 
 fig_effectsizelactos_ng <- 
   effectsize_final_ng %>% 
-  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Species == "Bombilactobacillus spp." | Species == "Lactobacillus near melliventris") %>%
   ggplot(aes(x=Sig, y = All.Logs)) +
   geom_rect(xmin = 0, xmax = 1.5, ymin = -Inf, ymax = Inf, fill = "#DCDCDC")+
   geom_boxplot(position=position_dodge(width = 2)) + 
@@ -220,11 +220,11 @@ Once again, make additional panels for the two Lactobacillales phylotypes.
 effectsize_lacto_sig_g <- 
   effectsize_final_g %>% 
   dplyr::filter(Sig == "Yes") %>% 
-  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5")
+  dplyr::filter(Species == "Bombilactobacillus spp." | Species == "Lactobacillus near melliventris")
 
 fig_effectsizelactos_g <- 
   effectsize_final_g %>% 
-  dplyr::filter(Species == "Lactobacillus Firm 4" | Species == "Lactobacillus Firm 5") %>%
+  dplyr::filter(Species == "Bombilactobacillus spp." | Species == "Lactobacillus near melliventris") %>%
   ggplot(aes(x=Sig, y = All.Logs)) +
   geom_rect(xmin = 0, xmax = 1.5, ymin = -Inf, ymax = Inf, fill = "#DCDCDC")+
   geom_boxplot(position=position_dodge(width = 2)) + 
@@ -281,7 +281,7 @@ effectsizesfig_fourpanel <-
 effectsizesfig_fourpanel
 ```
 
-Annotate the figure so that there is one common y-axis. **Note: The common legend of this figure does not show glyphosate and Roundup. They must be edited in after**
+Annotate the figure so that there is one common y-axis title. **Note: The common legend of this figure does not show glyphosate and Roundup. They must be edited in after**
 
 ```{r}
 annotate_figure(effectsizesfig_fourpanel,
